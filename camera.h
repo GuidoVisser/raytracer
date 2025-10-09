@@ -23,6 +23,7 @@ public:
     double defocus_angle = 0;   // Variation angle of rays through each pixel
     double focus_dist    = 10;  // Distance from the camera lookfrom point to plan of perfect focus
 
+    double time0, time1 = 0.0;    // Open and close time of shutter
 
     void render(const hittable& world)
     {
@@ -119,7 +120,12 @@ private:
         
         point3 ray_origin = (defocus_angle <= 0) ? m_center : defocus_disk_sample();
         point3 ray_direction = pixel_sample - ray_origin;
-        return ray(ray_origin, ray_direction);
+
+        // In order to facilitate motion blur, we introduce a shuttertime and each ray 
+        // is sampled at a random point in time between the open and close interval
+        double time = time0 + random_double() * (time1 - time0);
+        
+        return ray(ray_origin, ray_direction, time);
     }
 
     // Returns the vector to a random point in the [-.5, .5]-[-.5, .5] unit square

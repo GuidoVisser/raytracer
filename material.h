@@ -30,7 +30,7 @@ public:
         if (scatter_direction.near_zero())
             scatter_direction = rec.normal;
         
-        scattered = ray(rec.p, scatter_direction);
+        scattered = ray(rec.p, scatter_direction, r_in.time());
         attenuation = m_albedo;
         return true;
     }
@@ -48,7 +48,7 @@ public:
     {
         auto reflected = reflect(r_in.direction(), rec.normal);
         reflected = unit_vector(reflected) + (m_fuzz * random_unit_vector());
-        scattered = ray(rec.p, reflected);
+        scattered = ray(rec.p, reflected, r_in.time());
         attenuation = m_albedo;
         return (dot(scattered.direction(), rec.normal) > 0);
     }
@@ -71,7 +71,7 @@ public:
         if (scatter_direction.near_zero())
             scatter_direction = rec.normal;
         
-        scattered = ray(rec.p, scatter_direction);
+        scattered = ray(rec.p, scatter_direction, r_in.time());
         attenuation = m_albedo;
         return true;
     }
@@ -102,7 +102,7 @@ class dielectric : public material {
             direction = refract(unit_direction, rec.normal, ri);
         
 
-        scattered = ray(rec.p, direction);
+        scattered = ray(rec.p, direction, r_in.time());
         return true;
     }
 

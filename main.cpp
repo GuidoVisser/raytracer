@@ -28,7 +28,7 @@ int main()
                     // diffuse
                     auto albedo = color::random() * color::random();
                     sphere_material_p = make_shared<lambertian>(albedo);
-                    world.add(make_shared<sphere>(center, 0.2, sphere_material_p));
+                    world.add(make_shared<moving_sphere>(center, center + vec3(0, 0.5 * random_double(), 0), 0.0, 1.0, 0.2, sphere_material_p));
                 } else if (choose_mat < 0.95) {
                     // metal
                     auto albedo = color::random(0.5, 1);
@@ -59,6 +59,8 @@ int main()
     cam.image_width         = 1200;
     cam.samples_per_pixel   = 10;
     cam.max_recursion_depth = 10;
+    cam.time0               = 0.0;
+    cam.time1               = 1.0;
 
     cam.vfov     = 20;
     cam.lookfrom = point3(13,2,3);
