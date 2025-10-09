@@ -20,7 +20,7 @@ public:
 class lambertian : public material
 {
 public:
-    lambertian(const color& albedo) : albedo(albedo) {}
+    lambertian(const color& albedo) : m_albedo(albedo) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override
     {
@@ -31,37 +31,37 @@ public:
             scatter_direction = rec.normal;
         
         scattered = ray(rec.p, scatter_direction);
-        attenuation = albedo;
+        attenuation = m_albedo;
         return true;
     }
 
 private:
-    color albedo;
+    color m_albedo;
 };
 
 class metal : public material
 {
 public:
-    metal(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
+    metal(const color& albedo, double fuzz) : m_albedo(albedo), m_fuzz(fuzz < 1 ? fuzz : 1) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override
     {
         auto reflected = reflect(r_in.direction(), rec.normal);
-        reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
+        reflected = unit_vector(reflected) + (m_fuzz * random_unit_vector());
         scattered = ray(rec.p, reflected);
-        attenuation = albedo;
+        attenuation = m_albedo;
         return (dot(scattered.direction(), rec.normal) > 0);
     }
 
 private:
-    color albedo;
-    double fuzz;
+    color m_albedo;
+    double m_fuzz;
 };
 
 class uniform_diffuse : public material
 {
 public:
-    uniform_diffuse(const color& abledo) : albedo(albedo) {}
+    uniform_diffuse(const color& albedo) : m_albedo(albedo) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override
     {
@@ -72,22 +72,22 @@ public:
             scatter_direction = rec.normal;
         
         scattered = ray(rec.p, scatter_direction);
-        attenuation = albedo;
+        attenuation = m_albedo;
         return true;
     }
 
 private:
-    color albedo;
+    color m_albedo;
 };
 
 class dielectric : public material {
   public:
-    dielectric(double refraction_index) : refraction_index(refraction_index) {}
+    dielectric(double refraction_index) : m_refraction_index(refraction_index) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered)
     const override {
         attenuation = color(1.0, 1.0, 1.0);
-        double ri = rec.front_face ? (1.0/refraction_index) : refraction_index;
+        double ri = rec.front_face ? (1.0 / m_refraction_index) : m_refraction_index;
 
         vec3 unit_direction = unit_vector(r_in.direction());
         double cos_theta = std::fmin(dot(-unit_direction, rec.normal), 1.0);
@@ -109,7 +109,7 @@ class dielectric : public material {
   private:
     // Refractive index in vacuum or air, or the ratio of the material's refractive index over
     // the refractive index of the enclosing media
-    double refraction_index;
+    double m_refraction_index;
 
 
     static double reflectance(double cosine, double refraction_index)
