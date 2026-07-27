@@ -1,5 +1,7 @@
 #pragma once
 
+#include "aabb.h"
+
 class material;
 
 struct hit_record
@@ -24,4 +26,5 @@ class hittable
 public:
     virtual ~hittable() = default;
     virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
+    virtual axis_aligned_bounding_box bounding_box() const = 0;
 };

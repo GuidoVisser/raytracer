@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aabb.h"
 #include "hittable.h"
 
 #include <vector>
@@ -14,7 +15,11 @@ public:
     hittable_list(shared_ptr<hittable> object_p) { add(object_p); }
 
     void clear() { objects.clear(); }
-    void add(shared_ptr<hittable> object_p) { objects.push_back(object_p); }
+    void add(shared_ptr<hittable> object_p) 
+    {
+        objects.push_back(object_p);
+        m_bbox = axis_aligned_bounding_box(m_bbox, object_p->bounding_box());
+    }
 
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override
     {
@@ -32,4 +37,9 @@ public:
         }
         return hit_anything;
     }
+
+    axis_aligned_bounding_box bounding_box() const override { return m_bbox; }
+
+private:
+    axis_aligned_bounding_box m_bbox;
 };

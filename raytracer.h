@@ -32,6 +32,11 @@ inline double random_double(double min, double max)
     return min + (max-min)*random_double();
 }
 
+inline int random_int(int min, int max)
+{
+    int(random_double(min, max+1));
+}
+
 // Common headers
 #include "vec3.h"
 #include "interval.h"

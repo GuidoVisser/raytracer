@@ -1,5 +1,7 @@
 #include "raytracer.h"
 #include "camera.h"
+#include "bvh.h"
+#include "aabb.h"
 #include "hittable.h"
 #include "hittable_list.h"
 #include "material.h"
@@ -43,6 +45,9 @@ int main()
             }
         }
     }
+
+    // Bounding volume hierarchy
+    world = hittable_list(make_shared<bvh_node>(world));
 
     auto material1_p = make_shared<dielectric>(1.5);
     world.add(make_shared<sphere>(point3(0, 1, 0), 1.0, material1_p));
