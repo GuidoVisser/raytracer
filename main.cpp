@@ -1,4 +1,5 @@
 #include "raytracer.h"
+#include "texture.h"
 #include "camera.h"
 #include "bvh.h"
 #include "aabb.h"
@@ -12,10 +13,10 @@ int main()
 {
     // World
     hittable_list world;
- 
+
     // Add ground
-    auto ground_material_p = make_shared<lambertian>(color(0.5, 0.5, 0.5));
-    world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material_p));
+    auto checker = make_shared<checker_texture>(0.32, color(.2, .3, .1), color(.9, .9, .9));
+    world.add(make_shared<sphere>(point3(0,-1000,0), 1000, make_shared<lambertian>(checker)));
 
     // Add random spheres
     for (int a = -11; a < 11; a++) {
@@ -62,7 +63,7 @@ int main()
     camera cam;
     cam.aspect_ratio        = 16.0 / 9.0;
     cam.image_width         = 1200;
-    cam.samples_per_pixel   = 10;
+    cam.samples_per_pixel   = 50;
     cam.max_recursion_depth = 10;
     cam.time0               = 0.0;
     cam.time1               = 1.0;
