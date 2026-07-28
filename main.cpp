@@ -9,7 +9,7 @@
 #include "sphere.h"
 
 
-int main() 
+void bouncing_spheres() 
 {
     // World
     hittable_list world;
@@ -77,4 +77,41 @@ int main()
     cam.focus_dist    = 10.0;
 
     cam.render(world);
+}
+
+void checkered_spheres()
+{
+    hittable_list world;
+
+    auto checker = make_shared<checker_texture>(0.32, color(.2, .3, .1), color(.9, .9, .9));
+
+    world.add(make_shared<sphere>(point3(0,-10, 0), 10, make_shared<lambertian>(checker)));
+    world.add(make_shared<sphere>(point3(0, 10, 0), 10, make_shared<lambertian>(checker)));   
+
+    // Camera
+    camera cam;
+    cam.aspect_ratio        = 16.0 / 9.0;
+    cam.image_width         = 1200;
+    cam.samples_per_pixel   = 50;
+    cam.max_recursion_depth = 10;
+    cam.time0               = 0.0;
+    cam.time1               = 1.0;
+
+    cam.vfov     = 20;
+    cam.lookfrom = point3(13,2,3);
+    cam.lookat   = point3(0,0,0);
+    cam.vup      = vec3(0,1,0);
+
+    cam.defocus_angle = 0.6;
+
+    cam.render(world);
+}
+
+
+int main()
+{
+    switch (2) {
+        case 1: bouncing_spheres();  break;
+        case 2: checkered_spheres(); break;
+    }
 }
