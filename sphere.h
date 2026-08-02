@@ -37,6 +37,8 @@ public:
         rec.p = r.at(rec.t);
         vec3 outward_normal = (rec.p - m_center) / m_radius;
         rec.set_face_normal(r, outward_normal);
+        // TODO -> add to moving sphere
+        get_sphere_uv(outward_normal, rec.u, rec.v);
         rec.mat_p = m_mat_p;
 
         return true;
@@ -49,6 +51,15 @@ private:
     double m_radius;
     shared_ptr<material> m_mat_p;
     axis_aligned_bounding_box m_bbox;
+
+    static void get_sphere_uv(const point3& p, double& u, double& v)
+    {
+        auto theta = std::acos(-p.y());
+        auto phi = std::atan2(-p.z(), p.x()) + pi;
+
+        u = phi / (2*pi);
+        v = theta / pi;
+    }
 };
 
 class moving_sphere : public hittable

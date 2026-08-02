@@ -1,5 +1,6 @@
 #pragma once
 
+#include "rtw_stb_image.h"
 #include "vec3.h"
 #include "color.h"
 
@@ -52,4 +53,36 @@ private:
     double m_inv_scale;
     shared_ptr<texture> m_even;
     shared_ptr<texture> m_odd;
+};
+
+class image_texture : public texture
+{
+public:
+    image_texture(const char* filename) : image(filename) {}
+
+    color value(double u, double v, const point3& p) const override
+    {
+
+        // If we have no texture data, return a solid cyan.
+        if (image.height() <= 0) return color(0,1,1);
+
+        // Clamp input texture coordinates to [0,1] x [1,0]
+        u = interval(0, 1).clamp(u);
+        v = 1.0 - interval(0, 1).clamp(v); // v is flipped to image coordinates
+
+        auto i = int(u * image.width());
+        auto j = int(v * image.height());
+
+        auto pixel = image.pixel_data(i, j);
+
+        auto color_scale = 1.0 / 255.0;
+        return color(
+            color_scale * pixel[0],
+            color_scale * pixel[1],
+            color_scale * pixel[2]
+        );
+    }
+
+private:
+    rtw_image image;
 };
