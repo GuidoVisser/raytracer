@@ -88,3 +88,13 @@ private:
 
 const axis_aligned_bounding_box axis_aligned_bounding_box::empty    = axis_aligned_bounding_box(interval::empty,    interval::empty,    interval::empty);
 const axis_aligned_bounding_box axis_aligned_bounding_box::universe = axis_aligned_bounding_box(interval::universe, interval::universe, interval::universe);
+
+axis_aligned_bounding_box operator+(const axis_aligned_bounding_box& bbox, const vec3& offset)
+{
+    return axis_aligned_bounding_box(bbox.x + offset.x(), bbox.y + offset.y(), bbox.z + offset.z());
+}
+
+axis_aligned_bounding_box operator+(const vec3& offset, const axis_aligned_bounding_box& bbox)
+{
+    return bbox + offset;
+}
