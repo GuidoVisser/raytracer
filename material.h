@@ -35,7 +35,8 @@ public:
         
         // if random vector == rec.normal we get degenerate scatter vector
         if (scatter_direction.near_zero())
-            scatter_direction = rec.normal;
+            // scatter_direction = rec.normal;
+            return false; // don't scatter, removes artifacts in cornell box.
         
         scattered = ray(rec.p, scatter_direction, r_in.time());
         attenuation = m_texture->value(rec.u, rec.v, rec.p);
